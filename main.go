@@ -11,17 +11,18 @@ import (
 
 type req struct {
 	Headers http.Header
-	Body    []byte
+	Body    string
 	URL     *url.URL
 }
 
 type echoServer struct{}
 
 func (e echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
 	resp := req{
 		Headers: r.Header,
-		Body:    body,
+		Body:    string(body),
 		URL:     r.URL,
 	}
 	w.WriteHeader(200)
