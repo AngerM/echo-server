@@ -25,8 +25,7 @@ func (e echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Body:    string(body),
 		URL:     r.URL,
 	}
-	w.WriteHeader(200)
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	buf, _ := json.Marshal(resp)
 	w.Write(buf)
 }
