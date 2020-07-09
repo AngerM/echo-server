@@ -10,11 +10,12 @@ import (
 )
 
 type req struct {
-	Method  string
-	Headers http.Header
-	Body    string
-	URL     *url.URL
-	Query   url.Values
+	Method     string
+	Headers    http.Header
+	Body       string
+	ParsedBody map[string]interface{}
+	URL        *url.URL
+	Query      url.Values
 }
 
 type echoServer struct{}
@@ -29,6 +30,7 @@ func (e echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		URL:     r.URL,
 		Query:   r.URL.Query(),
 	}
+	json.Unmarshal(body, &resp.ParsedBody)
 	w.Header().Set("Content-Type", "application/json")
 	buf, _ := json.Marshal(resp)
 	w.Write(buf)
