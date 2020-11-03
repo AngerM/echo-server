@@ -32,6 +32,7 @@ func (e echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(body, &resp.ParsedBody)
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-cache")
 	buf, _ := json.Marshal(resp)
 	w.Write(buf)
 }
