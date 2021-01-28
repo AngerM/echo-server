@@ -1,12 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	json "github.com/json-iterator/go"
 )
 
 type req struct {
