@@ -31,6 +31,7 @@ func (e echoServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		URL:     r.URL,
 		Query:   r.URL.Query(),
 	}
+	// Parse body if json
 	json.Unmarshal(body, &resp.ParsedBody)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-cache")
