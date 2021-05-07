@@ -1,7 +1,7 @@
 module github.com/AngerM/echo-server
 
-// +heroku goVersion 1.15
-go 1.15
+// +heroku goVersion 1.16
+go 1.16
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
