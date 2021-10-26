@@ -22,6 +22,6 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/sys v0.0.0-20211002104244-808efd93c36d // indirect
+	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
