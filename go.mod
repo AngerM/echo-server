@@ -21,7 +21,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
-	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3 // indirect
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2 // indirect
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
