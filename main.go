@@ -43,6 +43,6 @@ func main() {
 		port = "8080"
 	}
 	s := gin.Default()
-	s.Any("", ServeHTTP)
+	s.Any("/*any", ServeHTTP)
 	s.Run(":" + port)
 }
