@@ -1,12 +1,16 @@
 package main
 
 import (
-	"io/ioutil"
+	"context"
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
-	"github.com/gin-gonic/gin"
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/hertz-contrib/http2/config"
+	"github.com/hertz-contrib/http2/factory"
 	json "github.com/json-iterator/go"
 )
 
@@ -19,22 +23,27 @@ type req struct {
 	Query      url.Values
 }
 
-func ServeHTTP(c *gin.Context) {
-	defer c.Request.Body.Close()
-	body, _ := ioutil.ReadAll(c.Request.Body)
+func ServeHTTP(ctx context.Context, c *app.RequestContext) {
+	body := c.Request.Body()
+	headers := http.Header{}
+	c.Request.Header.VisitAll(func(key, value []byte) {
+		headers[string(key)] = []string{string(value)}
+	})
+	u,_ := url.Parse(string(c.Request.URI().FullURI()))
 	resp := req{
-		Method:  c.Request.Method,
-		Headers: c.Request.Header,
+		Method:  string(c.Request.Method()),
+		Headers: headers,
 		Body:    string(body),
-		URL:     c.Request.URL,
-		Query:   c.Request.URL.Query(),
+		URL:     u,
+		Query:   u.Query(),
 	}
 	// Parse body if json
 	json.Unmarshal(body, &resp.ParsedBody)
 	c.Header("Content-Type", "application/json")
 	c.Header("Cache-Control", "no-cache")
 	buf, _ := json.Marshal(resp)
-	c.Writer.Write(buf)
+	c.Status(200)
+	c.Write(buf)
 }
 
 func main() {
@@ -42,7 +51,10 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	s := gin.Default()
-	s.Any("/*any", ServeHTTP)
-	s.Run(":" + port)
+	h := server.New(server.WithHostPorts(":" + port))
+	h.AddProtocol("h2", factory.NewServerFactory(
+		config.WithReadTimeout(time.Minute),
+		config.WithDisableKeepAlive(false)))
+	h.NoRoute(ServeHTTP)
+	h.Spin()
 }
