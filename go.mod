@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/cloudwego/hertz v0.6.0
 	github.com/hertz-contrib/http2 v0.1.5
+	github.com/hertz-contrib/http3/network/quic-go v0.1.0
 	github.com/hertz-contrib/http3/server/quic-go v0.1.0
 	github.com/json-iterator/go v1.1.12
 )

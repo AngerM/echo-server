@@ -41,6 +41,8 @@ github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 h1:yE9ULgp02BhY
 github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8/go.mod h1:Nhe/DM3671a5udlv2AdV2ni/MZzgfv2qrPL5nIi3EGQ=
 github.com/hertz-contrib/http2 v0.1.5 h1:4AwrEXyeXA0dOvQ2GEX4ASpV+uuwIaeVdZAokDcRvJA=
 github.com/hertz-contrib/http2 v0.1.5/go.mod h1:wjsm9+u4yvjJy4mjsp4SfE6gjvCHKkkUq2Sc/f4LITM=
+github.com/hertz-contrib/http3/network/quic-go v0.1.0 h1:YjD+Et3FPZF0Yd8DjPItHsNQOAYWoYg6lUTnfRbklMY=
+github.com/hertz-contrib/http3/network/quic-go v0.1.0/go.mod h1:IEU8KTPV/TM+OOK2qjMRuPplGwFyJdLcmnHoo+C5P3o=
 github.com/hertz-contrib/http3/server/quic-go v0.1.0 h1:b2q68Jdemr2m6uyoXz/Ke6fyvkR/inDi1vLh8S8pIMU=
 github.com/hertz-contrib/http3/server/quic-go v0.1.0/go.mod h1:gt7dPz4rBb88gp28mXXubEiYqkdzV7SivVURGME0wQ0=
 github.com/ianlancetaylor/demangle v0.0.0-20200824232613-28f6c0f3b639/go.mod h1:aSSvb/t6k1mPoxDqO4vJh6VOCGPwU4O0C2/Eqndh1Sc=
