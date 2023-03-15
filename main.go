@@ -9,8 +9,11 @@ import (
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/hertz-contrib/http2/config"
-	"github.com/hertz-contrib/http2/factory"
+	"github.com/cloudwego/hertz/pkg/protocol/suite"
+	h2config "github.com/hertz-contrib/http2/config"
+	h2factory "github.com/hertz-contrib/http2/factory"
+	http3 "github.com/hertz-contrib/http3/server/quic-go"
+	h3factory "github.com/hertz-contrib/http3/server/quic-go/factory"
 	json "github.com/json-iterator/go"
 )
 
@@ -52,9 +55,17 @@ func main() {
 		port = "8080"
 	}
 	h := server.New(server.WithHostPorts(":" + port))
-	h.AddProtocol("h2", factory.NewServerFactory(
-		config.WithReadTimeout(time.Minute),
-		config.WithDisableKeepAlive(false)))
+	h.AddProtocol(suite.HTTP2,
+		h2factory.NewServerFactory(
+			h2config.WithReadTimeout(time.Minute),
+			h2config.WithDisableKeepAlive(false),
+		),
+	)
+	h.AddProtocol(suite.HTTP3,
+		h3factory.NewServerFactory(
+			&http3.Option{},
+		),
+	)
 	h.NoRoute(ServeHTTP)
 	h.Spin()
 }
