@@ -35,7 +35,7 @@ func ServeHTTP(ctx context.Context, c *app.RequestContext) {
 	c.Request.Header.VisitAll(func(key, value []byte) {
 		headers[string(key)] = []string{string(value)}
 	})
-	u,_ := url.Parse(string(c.Request.URI().FullURI()))
+	u, _ := url.Parse(string(c.Request.URI().FullURI()))
 	resp := req{
 		Method:  string(c.Request.Method()),
 		Headers: headers,
@@ -62,7 +62,7 @@ func main() {
 		server.WithTLS(quictestdata.GetTLSConfig()),
 		server.WithTransport(quic.NewTransporter),
 		server.WithAltTransport(netpoll.NewTransporter),
-		server.WithHostPorts(":" + port),
+		server.WithHostPorts(":"+port),
 	)
 	h.AddProtocol(suite.HTTP2,
 		h2factory.NewServerFactory(
