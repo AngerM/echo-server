@@ -53,10 +53,12 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+  // setup base server
 	h := server.New(
 		server.WithAltTransport(netpoll.NewTransporter),
 		server.WithHostPorts(":"+port),
 	)
+  // add in http2 support
 	h.AddProtocol(suite.HTTP2,
 		h2factory.NewServerFactory(
 			h2config.WithReadTimeout(time.Minute),
