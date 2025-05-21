@@ -20,7 +20,7 @@ type req struct {
 	Method     string
 	Headers    http.Header
 	Body       string
-	ParsedBody map[string]interface{}
+	ParsedBody map[string]any
 	URL        *url.URL
 	Query      url.Values
 }
