@@ -1,0 +1,30 @@
+name: Validate Fly Config
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'fly.toml'
+      - '.github/workflows/validate-fly.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'fly.toml'
+      - '.github/workflows/validate-fly.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate fly.toml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Validate fly.toml
+        run: flyctl config validate
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN || 'dummy_token' }}
