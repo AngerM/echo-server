@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . /app
-RUN go build -o echo-server
+RUN GOEXPERIMENT=jsonv2 go build -o echo-server
 
 FROM alpine:latest
 COPY --from=builder /app/echo-server /echo-server

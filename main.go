@@ -1,19 +1,14 @@
 package main
 
 import (
-	"context"
+	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
 
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/network/netpoll"
-	"github.com/cloudwego/hertz/pkg/protocol/suite"
-	h2config "github.com/hertz-contrib/http2/config"
-	h2factory "github.com/hertz-contrib/http2/factory"
-	json "github.com/json-iterator/go"
+	"encoding/json/v2"
 )
 
 type req struct {
@@ -25,27 +20,43 @@ type req struct {
 	Query      url.Values
 }
 
-func ServeHTTP(ctx context.Context, c *app.RequestContext) {
-	body := c.Request.Body()
-	headers := http.Header{}
-	c.Request.Header.VisitAll(func(key, value []byte) {
-		headers[string(key)] = []string{string(value)}
-	})
-	u, _ := url.Parse(string(c.Request.URI().FullURI()))
+// ServeHTTP handles all incoming HTTP requests and echoes back information about the request.
+func ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusInternalServerError)
+		return
+	}
+	defer r.Body.Close()
+
+	// Reconstruct the full URL
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+	u, _ := url.Parse(scheme + "://" + r.Host + r.URL.RequestURI())
+
 	resp := req{
-		Method:  string(c.Request.Method()),
-		Headers: headers,
+		Method:  r.Method,
+		Headers: r.Header,
 		Body:    string(body),
 		URL:     u,
 		Query:   u.Query(),
 	}
-	// Parse body if json
-	json.Unmarshal(body, &resp.ParsedBody)
-	c.Header("Content-Type", "application/json")
-	c.Header("Cache-Control", "no-cache")
-	buf, _ := json.Marshal(resp)
-	c.Status(200)
-	c.Write(buf)
+
+	// Try to parse the request body as JSON
+	_ = json.Unmarshal(body, &resp.ParsedBody)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(http.StatusOK)
+
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
+		return
+	}
+	_, _ = w.Write(buf)
 }
 
 func main() {
@@ -53,18 +64,17 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-  // setup base server
-	h := server.New(
-		server.WithAltTransport(netpoll.NewTransporter),
-		server.WithHostPorts(":"+port),
-	)
-  // add in http2 support
-	h.AddProtocol(suite.HTTP2,
-		h2factory.NewServerFactory(
-			h2config.WithReadTimeout(time.Minute),
-			h2config.WithDisableKeepAlive(false),
-		),
-	)
-	h.NoRoute(ServeHTTP)
-	h.Spin()
+
+	log.Printf("Starting server on port %s", port)
+
+	server := &http.Server{
+		Addr:         ":" + port,
+		Handler:      http.HandlerFunc(ServeHTTP),
+		ReadTimeout:  1 * time.Minute,
+		WriteTimeout: 1 * time.Minute,
+	}
+
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server failed: %v", err)
+	}
 }
