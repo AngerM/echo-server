@@ -15,10 +15,10 @@ jobs:
       GOEXPERIMENT: jsonv2
     steps:
     - name: Check out code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Go 1.x
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         cache-dependency-path: |
           go.sum
