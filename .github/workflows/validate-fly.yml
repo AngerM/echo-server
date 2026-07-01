@@ -2,12 +2,12 @@ name: Validate Fly Config
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'fly.toml'
       - '.github/workflows/validate-fly.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'fly.toml'
       - '.github/workflows/validate-fly.yml'
